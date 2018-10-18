@@ -1,5 +1,5 @@
                                 // A B C D E F G   
-byte matriz1[10][7] =            { { 1,1,1,1,1,1,0 },  // = Digito 0
+byte matrizDireita[10][7] =            { { 1,1,1,1,1,1,0 },  // = Digito 0
                                  { 0,1,1,0,0,0,0 },  // = Digito 1
                                  { 1,1,0,1,1,0,1 },  // = Digito 2
                                  { 1,1,1,1,0,0,1 },  // = Digito 3
@@ -11,7 +11,7 @@ byte matriz1[10][7] =            { { 1,1,1,1,1,1,0 },  // = Digito 0
                                  { 1,1,1,0,0,1,1 },  // = Digito 9
                                  };
                                 // A B C D E F G   
-byte matriz2[10][7] =            { { 1,1,1,1,1,1,0 },  // = Digito 0
+byte matrizEsquerda[10][7] =     { { 1,1,1,1,1,1,0 },  // = Digito 0
                                  { 0,1,1,0,0,0,0 },  // = Digito 1
                                  { 1,1,0,1,1,0,1 },  // = Digito 2
                                  { 1,1,1,1,0,0,1 },  // = Digito 3
@@ -24,6 +24,14 @@ byte matriz2[10][7] =            { { 1,1,1,1,1,1,0 },  // = Digito 0
                                  };                                 
 byte count1 = 0;
 byte count2 = 0;
+
+
+/*
+--Utilize o timer 1 para controlar a periodicidade de atualização do
+display 7 segmentos (valor que será apresentado). EU SOU O CONTADOR 
+--Utilize o timer 2 para controlar a periodicidade que o LED pisca
+(apresentação da informação no display). EU SOU O DELAY
+*/
 
 void setup() 
 {
@@ -46,7 +54,7 @@ void setup()
   pinMode(13, OUTPUT); //led da placa
   writePonto(0);  //inicializa ponto decimal como desligado
   pinMode(2, INPUT);//Esta inicializando o botao que esta na posicao 20
- attachInterrupt(0, reset, RISING);//digitalPinToInterrupt(20)
+  attachInterrupt(0, reset, RISING);//digitalPinToInterrupt(20)
 }
   
 void writePonto(byte modo)   //Funcao que aciona o ponto no display
@@ -54,15 +62,15 @@ void writePonto(byte modo)   //Funcao que aciona o ponto no display
   digitalWrite(10, modo);
 }
 
-void sevenSegWrite(byte digit)  //Funcao que aciona o display
+void escreveDisplay(byte numero)  //Funcao que aciona o display
 {
-  byte pin = 3;
+  byte pino = 3;
 
   //Percorre o array ligando os segmentos correspondentes ao digito
-  for (byte segCount = 0; segCount < 7; ++segCount)  
+  for (byte letra = 0; letra < 7; ++letra)  
   { 
-    digitalWrite(pin, seven_seg_digits[digit][segCount]);
-    ++pin;
+    digitalWrite(pino, seven_seg_digits[numero][letra]);
+    ++pino;
   }
     writePonto(1);  //Liga o ponto
     delay(100);   //Aguarda 100 milisegundos
