@@ -1,4 +1,4 @@
-                                // A B C D E F G   
+                                   // A B C D E F G   
 byte matrizModo[11][7] = {        {0,1,1,0,1,1,1},//H
                                   {1,0,0,1,1,1,1},//E
                                   {0,0,0,1,1,1,0},//L
@@ -131,4 +131,5 @@ void interrupt1() // transcorrer as palavras de frente para tras
          delay(10000);  
   }
 }
+
 
