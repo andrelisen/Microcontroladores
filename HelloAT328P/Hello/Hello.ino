@@ -15,6 +15,12 @@ byte count = 0;
 int botao = 2;
 int estadoBotao;
 
+/*
+Faça com que as transições das letras sejam feitas com interrupções,
+das seguintes formas:
+• Nos pinos INT0 e INT1;
+• Com Pin Change;
+• Usando Timer.*/
 
 void setup() 
 {
