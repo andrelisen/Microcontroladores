@@ -1,5 +1,5 @@
                                 // A B C D E F G   
-byte seven_seg_digits[11][7] = {  {0,1,1,0,1,1,1},//H
+byte matrizModo[11][7] = {        {0,1,1,0,1,1,1},//H
                                   {1,0,0,1,1,1,1},//E
                                   {0,0,0,1,1,1,0},//L
                                   {0,0,0,1,1,1,0},//L
@@ -12,19 +12,29 @@ byte seven_seg_digits[11][7] = {  {0,1,1,0,1,1,1},//H
                                   {1,1,0,0,1,1,1},//P
                                  };
 byte count = 0;
-int botao = 2;
-int estadoBotao;
-
+int contagem = 0;
 /*
 Faça com que as transições das letras sejam feitas com interrupções,
 das seguintes formas:
 • Nos pinos INT0 e INT1;
 • Com Pin Change;
 • Usando Timer.*/
+//LOW = 1 HIGH = 0
+
+
+//rotina de interrupçao do avr
+ISR(TIMER2_OVF_vect) //timer2 por overflow
+{
+  TCNT2 = 0; //reinicializa registrador de contagem do timer2 (8 bits)
+  contagem++;
+    if(contagem == 100){
+       count = count + 1;
+       contagem = 0;
+    }
+}
 
 void setup() 
 {
-  pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
@@ -32,27 +42,42 @@ void setup()
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
   pinMode(13, OUTPUT);
   writePonto(0);  //inicializa ponto decimal como desligado
-  pinMode(2, INPUT);//Esta inicializando o botao que esta na posicao 20
- attachInterrupt(0, reset, CHANGE);//digitalPinToInterrupt(20)
- Serial.begin(9600);
+  pinMode(2, INPUT);//Esta inicializando o botao 
+  pinMode(3, INPUT);
+// attachInterrupt(0, reset, CHANGE);//digitalPinToInterrupt(20)
+   attachInterrupt(0, interrupt0, FALLING); // de alto para baixo
+   attachInterrupt(1, interrupt1, FALLING);
+     TCCR2A = 0; //timer operando em modo normal, registrador de controle do timer2 (8 bits em zero)
+     TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer (3 bits menos significativos) multiplica o ciclo de maquina por 1024
+     TCNT2 = 0; //registrador de contagem
+     TIMSK2 = 1;//habilita interrupçao do timer2
+    //como calcular o tempo??
+     /*
+      overflow = timer2_cont * prescaler * ciclo de maquina
+      ciclo de maquina = 16mhz = 1/16000000 = 62,5ns
+      overflow = 256 * 1024 * 62,5E-9 = 16,38ms
+      A cada 16,5ms ocorre uma interrupçao do timer2
+    */
 }
   
 void writePonto(byte modo)   //Funcao que aciona o ponto no display
 {  
-  digitalWrite(10, modo);
+  digitalWrite(11, modo);
 }
 
-void sevenSegWrite(byte digit)  //Funcao que aciona o display
+void escreveDisplay(byte numero)  //Funcao que aciona o display
 {
-  byte pin = 3;
+  byte pin = 4;
 
   //Percorre o array ligando os segmentos correspondentes ao digito
-  for (byte segCount = 0; segCount < 7; ++segCount)  
+  for (byte letra = 0; letra < 7; ++letra)  
   { 
-    digitalWrite(pin, seven_seg_digits[digit][segCount]);
+    digitalWrite(pin, matrizModo[numero][letra]);
     ++pin;
+   // zeraDisplay(letra, pin);
   }
     writePonto(1);  //Liga o ponto
     delay(100);   //Aguarda 100 milisegundos
@@ -61,22 +86,49 @@ void sevenSegWrite(byte digit)  //Funcao que aciona o display
 
 void loop() 
 {
-   if(count ==11)
-   {
-     count = 0;
-   }
-   else{
-     sevenSegWrite(count);
-     count++;
-    delay(1000); 
-   }
-}     
+      if (count == 11)
+      {
+        count = 0; //zera a contagem
+      }  
+      else{
+        delay(500);
+        escreveDisplay(count);
+     //   count = count + 1;
+      }
+}
 
-void reset()
+void interrupt0() //transcorrer as palavras de tras para frente
+{
+  if(count == 0) //significa que ainda nao foi digitado nada
   {
-    count = 0;
-    delay(1000);
-    digitalWrite(13,LOW);
-    delay(1000);
-    digitalWrite(13,HIGH);
+     delay(10000);
+     count = 10;
+     escreveDisplay(count);
+     delay(10000);
   }
+  else{
+         delay(10000);
+         count = count - 1;
+         escreveDisplay(count);
+         delay(10000);
+  }
+}
+
+void interrupt1() // transcorrer as palavras de frente para tras
+{
+  if(count == 0 || count == 11) //significa que ainda nao foi digitado nada
+  {
+     delay(10000);
+     count = 0;
+     escreveDisplay(count);
+     delay(10000);    
+     count = count + 1;
+  }
+  else{
+         delay(10000);
+         escreveDisplay(count);
+          count = count + 1;
+         delay(10000);  
+  }
+}
+
