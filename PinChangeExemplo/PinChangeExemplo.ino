@@ -19,15 +19,13 @@ void InitialiseInterrupt(){
 }
 
 void InitialiseIO(){
-  pinMode(A0, INPUT_PULLUP);
-  pinMode(A1, INPUT_PULLUP);	   
-  pinMode(A2, INPUT_PULLUP);	   
+  pinMode(0, INPUT);
+  //pinMode(A1, INPUT_PULLUP);	   
+  //pinMode(A2, INPUT_PULLUP);	   
 }
 
 
 ISR(PCINT1_vect) {    // Interrupt service routine. Every single PCINT8..14 (=ADC0..5) change
             // will generate an interrupt: but this will always be the same interrupt routine
-  if (digitalRead(A0)==0)  Serial.println("A0");
-  if (digitalRead(A1)==0)  Serial.println("A1");
-  if (digitalRead(A2)==0)  Serial.println("A2");
+  Serial.println("Interrupcao entrou");
 }

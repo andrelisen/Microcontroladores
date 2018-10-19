@@ -12,7 +12,7 @@ byte matrizModo[11][7] = {        {0,1,1,0,1,1,1},//H
                                   {1,1,0,0,1,1,1},//P
                                  };
 byte count = 0;
-//int contagem = 0;
+int contagem = 0;
 /*
 Faça com que as transições das letras sejam feitas com interrupções,
 das seguintes formas:

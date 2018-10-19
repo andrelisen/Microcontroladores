@@ -22,38 +22,22 @@ das seguintes formas:
 
 void InitialiseInterrupt(){
   cli();		        // Desabilita interrupcoes  
- // PCICR =2;    //ou 0x02;       // Enable PCINT1 interrupt PINOS de [28:23] ou PCINT[14:8] (Analogicos A0-A5) 
   PCICR = 0x02;
- // PCMSK1 = 7; //ou 0b00000111;  // Seta a mascara para PCINT1 (PCINT0|PCINT1|PCINT2)
   PCMSK1 = 0b00000111;
   sei();		        // Habilita interrupcoes
 }
 
-void InitialiseIO(){
- 
-//  pinMode(A1, INPUT_PULLUP);	   
- // pinMode(A2, INPUT_PULLUP);	   
-}
-
-
-ISR(PCINT1_vect) {    // Interrupt service routine. Every single PCINT8..14 (=ADC0..5) change
-            // will generate an interrupt: but this will always be the same interrupt routine
-  Serial.println("ENTREI");
+ISR(PCINT1_vect) {    
   if(count == 0 || count == 11) //primeira vez
   {
-  //  delay(500);
     count = 0;
     escreveDisplay(count);
     count = count + 1;  
   }
   else{
-   // delay(500);
     escreveDisplay(count);
     count = count + 1;  
   }
-//  if (digitalRead(A0)==0)  Serial.println("A0");
- //  if (digitalRead(A1)==0)  Serial.println("A1");
- // if (digitalRead(A2)==0)  Serial.println("A2");
 }
 
 void setup() 
@@ -68,12 +52,7 @@ void setup()
   pinMode(11, OUTPUT);
   pinMode(13, OUTPUT); //led da placa
   writePonto(0);  //inicializa ponto decimal como desligado
-  pinMode(2, INPUT);//Esta inicializando o botao 
-  pinMode(3, INPUT);
   pinMode(A0, INPUT_PULLUP);
-  Serial.begin(9600);
-  Serial.println("Iniciando Configuracoes");
-  InitialiseIO();
   InitialiseInterrupt();
 }
   
@@ -91,7 +70,6 @@ void escreveDisplay(byte numero)  //Funcao que aciona o display
   { 
     digitalWrite(pin, matrizModo[numero][letra]);
     ++pin;
-   // zeraDisplay(letra, pin);
   }
     writePonto(1);  //Liga o ponto
     delay(100);   //Aguarda 100 milisegundos
