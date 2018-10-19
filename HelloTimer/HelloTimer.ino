@@ -23,15 +23,20 @@ das seguintes formas:
 
 
 //rotina de interrupçao do avr
-//ISR(TIMER2_OVF_vect) //timer2 por overflow
-//{
-//  TCNT2 = 0; //reinicializa registrador de contagem do timer2 (8 bits)
-//  contagem++;
-//    if(contagem == 100){
-//       count = count + 1;
-//       contagem = 0;
-//    }
-//}
+ISR(TIMER2_OVF_vect) //timer2 por overflow
+{
+  TCNT2 = 0; //reinicializa registrador de contagem do timer2 (8 bits)
+  contagem++;
+    if(contagem == 100){
+       if (count == 11)
+        {
+        count = 0; //zera a contagem
+        }  
+        escreveDisplay(count);
+        count = count + 1;
+        contagem = 0;
+    }
+}
 
 void setup() 
 {
@@ -45,15 +50,10 @@ void setup()
   pinMode(11, OUTPUT);
   pinMode(13, OUTPUT);
   writePonto(0);  //inicializa ponto decimal como desligado
-  pinMode(2, INPUT);//Esta inicializando o botao 
-  pinMode(3, INPUT);
-// attachInterrupt(0, reset, CHANGE);//digitalPinToInterrupt(20)
-   attachInterrupt(0, interrupt0, RISING); // de alto para baixo
-   attachInterrupt(1, interrupt1, RISING);
- //    TCCR2A = 0; //timer operando em modo normal, registrador de controle do timer2 (8 bits em zero)
-  //   TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer (3 bits menos significativos) multiplica o ciclo de maquina por 1024
-  //   TCNT2 = 0; //registrador de contagem
-  //   TIMSK2 = 1;//habilita interrupçao do timer2
+  TCCR2A = 0; //timer operando em modo normal, registrador de controle do timer2 (8 bits em zero)
+  TCCR2B = 7; //prescaler 1:1024, divisor permite contar tempos maiores com o timer (3 bits menos significativos) multiplica o ciclo de maquina por 1024
+  TCNT2 = 0; //registrador de contagem
+  TIMSK2 = 1;//habilita interrupçao do timer2
     //como calcular o tempo??
      /*
       overflow = timer2_cont * prescaler * ciclo de maquina
@@ -77,7 +77,6 @@ void escreveDisplay(byte numero)  //Funcao que aciona o display
   { 
     digitalWrite(pin, matrizModo[numero][letra]);
     ++pin;
-   // zeraDisplay(letra, pin);
   }
     writePonto(1);  //Liga o ponto
     delay(100);   //Aguarda 100 milisegundos
@@ -86,50 +85,7 @@ void escreveDisplay(byte numero)  //Funcao que aciona o display
 
 void loop() 
 {
-//      if (count == 11)
- //     {
- //       count = 0; //zera a contagem
-  ///    }  
-   //   else{
-    //    delay(500);
-   //     escreveDisplay(count);
-     //   count = count + 1;
-  //    }
-}
-
-void interrupt0() //transcorrer as palavras de tras para frente
-{
-  if(count == 0) //significa que ainda nao foi digitado nada
-  {
-     delay(10000);
-     count = 10;
-     escreveDisplay(count);
-     delay(10000);
-  }
-  else{
-         delay(10000);
-         count = count - 1;
-         escreveDisplay(count);
-         delay(10000);
-  }
-}
-
-void interrupt1() // transcorrer as palavras de frente para tras
-{
-  if(count == 0 || count == 11) //significa que ainda nao foi digitado nada
-  {
-     delay(10000);
-     count = 0;
-     escreveDisplay(count);
-     delay(10000);    
-     count = count + 1;
-  }
-  else{
-         delay(10000);
-         escreveDisplay(count);
-          count = count + 1;
-         delay(10000);  
-  }
+       
 }
 
 

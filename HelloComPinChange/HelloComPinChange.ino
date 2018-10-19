@@ -30,25 +30,24 @@ void InitialiseInterrupt(){
 }
 
 void InitialiseIO(){
-  pinMode(A0, INPUT);
-  digitalWrite(A0,HIGH);
-  pinMode(A1, INPUT_PULLUP);	   
-  pinMode(A2, INPUT_PULLUP);	   
+ 
+//  pinMode(A1, INPUT_PULLUP);	   
+ // pinMode(A2, INPUT_PULLUP);	   
 }
 
 
 ISR(PCINT1_vect) {    // Interrupt service routine. Every single PCINT8..14 (=ADC0..5) change
             // will generate an interrupt: but this will always be the same interrupt routine
   Serial.println("ENTREI");
-  if(count = 0 || count == 11) //primeira vez
+  if(count == 0 || count == 11) //primeira vez
   {
-    delay(500);
+  //  delay(500);
     count = 0;
     escreveDisplay(count);
     count = count + 1;  
   }
   else{
-    delay(500);
+   // delay(500);
     escreveDisplay(count);
     count = count + 1;  
   }
@@ -71,6 +70,7 @@ void setup()
   writePonto(0);  //inicializa ponto decimal como desligado
   pinMode(2, INPUT);//Esta inicializando o botao 
   pinMode(3, INPUT);
+  pinMode(A0, INPUT_PULLUP);
   Serial.begin(9600);
   Serial.println("Iniciando Configuracoes");
   InitialiseIO();
