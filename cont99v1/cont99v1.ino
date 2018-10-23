@@ -38,65 +38,22 @@ display 7 segmentos (valor que será apresentado). EU SOU O CONTADOR
 
 ISR(TIMER1_OVF_vect) //interrupção do TIMER1
 {
-    if(controleTimer1 == 385)
-    {
-     if(countDireita != 9)
-     {
-     countDireita = countDireita + 1;
-     escreveDisplayDireita(countDireita);
-     }
-     else{
-       countEsquerda = countEsquerda + 1;
-       countDireita = 0;
-        escreveDisplayDireita(countDireita);
-        escreveDisplayEsquerda(countEsquerda);
-       // digitalWrite(13, LOW);
-       //  delay(500);
-       //  digitalWrite(13, HIGH);
-     }
-     if(countEsquerda == 9 && countDireita == 9)
-     {
-     countEsquerda = 0;
-     countDireita = 0;
-      escreveDisplayDireita(countDireita);
-      escreveDisplayEsquerda(countEsquerda);
-     }
-     controleTimer1 = 0 ;
-    }
+   controleTimer1 = controleTimer1 + 1;
+    if(controleTimer1 == 245) //1segundo
+       {
+         controleTimer1 = 0 ;
+         escreveDisplayDireita(5);
+       }
      TCNT1 = 0;
-     controleTimer1 = controleTimer1 + 1;
 }
 
 ISR(TIMER2_OVF_vect) //timer2 por overflow --> controla tela
 {
     TCNT2 = 0; //reinicializa registrador      
-    //de contagem do timer2 (8 bits)
-    controleTimer2 ++;
-    if(controleTimer2 == 100){
-      if(countDireita != 9)
-     {
-     //countDireita = countDireita + 1;
-     escreveDisplayDireita(countDireita);
-     }
-     else{
-     //  countEsquerda = countEsquerda + 1;
-      // countDireita = 0;
-        escreveDisplayDireita(countDireita);
-        escreveDisplayEsquerda(countEsquerda);
-       // digitalWrite(13, LOW);
-       //  delay(500);
-       //  digitalWrite(13, HIGH);
-     }
-     if(countEsquerda == 9 && countDireita == 9)
-     {
-     //countEsquerda = 0;
-    // countDireita = 0;
-      escreveDisplayDireita(countDireita);
-      escreveDisplayEsquerda(countEsquerda);
-     }
-     controleTimer2 = 0 ;
+    controleTimer2 = controleTimer2 + 1;
+    if(controleTimer2 == 73){//era 63
+      escreveDisplayEsquerda(9);
     }
-
 }
 
 void setup()  
@@ -111,11 +68,13 @@ void setup()
     pinMode(i, OUTPUT);//SETANDO LEDS DO DISPLAY DE 7 SEGMENTOS  
   }
   //CONFIGURACAO TIMER 1 
-     TCCR1A = 0; //confira timer para operação normal
-     TCCR1B = 0; //limpa registrador
-     TIMSK1 |= (1 << TOIE1); // habilita a interrupção doTIMER1
-     TCCR1B = 1; // modo normal SEM PRESCALER
-     TCNT1 = 0; 
+   TCCR1A = 0; //confira timer para operação normal
+    //pinos OC1A e OC1B desconectados
+   TCCR1B = 0; //limpa registrador
+   TIMSK1 |= (1 << TOIE1); // habilita a interrupção do TIMER1
+//---------------SEM PRESCALER------------------------------------
+   TCCR1B = 1; // modo normal sem prescaler
+   TCNT1 = 0;
    pinMode(13, OUTPUT);
    //CONFIGURACAO TIMER 2
      TCCR2A = 0; //timer operando em modo normal, registrador de
