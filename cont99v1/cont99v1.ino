@@ -36,25 +36,39 @@ display 7 segmentos (valor que será apresentado). EU SOU O CONTADOR
 (apresentação da informação no display). EU SOU O DELAY 
 */ 
 
-ISR(TIMER1_OVF_vect) //interrupção do TIMER1
-{
-   controleTimer1 = controleTimer1 + 1;
-    if(controleTimer1 == 245) //1segundo
-       {
-         controleTimer1 = 0 ;
-         escreveDisplayDireita(5);
-       }
-     TCNT1 = 0;
-}
 
 ISR(TIMER2_OVF_vect) //timer2 por overflow --> controla tela
 {
     TCNT2 = 0; //reinicializa registrador      
     controleTimer2 = controleTimer2 + 1;
-    if(controleTimer2 == 73){//era 63
-      escreveDisplayEsquerda(9);
-    }
+    if(controleTimer2 == 63){//era 63
+     escreveDisplayDireita(countDireita);
+     escreveDisplayEsquerda(countEsquerda);   
+      controleTimer2=0;  
+  }
 }
+
+ISR(TIMER1_OVF_vect) //interrupção do TIMER1
+{
+   controleTimer1 = controleTimer1 + 1;
+    if(controleTimer1 == 245) //1segundo
+       {
+         countDireita = countDireita + 1;
+         if(countDireita == 10)
+        {
+          countEsquerda ++; 
+          countDireita = 0;
+        } 
+        if(countDireita == 10 && countEsquerda == 10)
+        {
+        countDireita = 0;
+        countEsquerda = 0;
+        }
+      controleTimer1 = 0;
+      }
+     TCNT1 = 0;
+}
+
 
 void setup()  
 { 
