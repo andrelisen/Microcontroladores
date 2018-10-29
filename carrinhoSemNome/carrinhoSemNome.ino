@@ -46,99 +46,25 @@ void tras()
 
 void direita()
 {
-  parado();
-  delay(1000);
+ // parado();
+//  delay(1000);
   digitalWrite(motorA1, velocidade);
   digitalWrite(motorA2, velocidade);
   digitalWrite(motorB1, velocidade);
   digitalWrite(motorB2,LOW);
-  delay(500);
+//  delay(500);
 }
 
 void esquerda()
 {
-  parado();
-  delay(1000);
+ // parado();
+ // delay(1000);
   digitalWrite(motorA1, velocidade);
   digitalWrite(motorA2, LOW);
   digitalWrite(motorB1, velocidade);
   digitalWrite(motorB2,velocidade);
-  delay(500);
+//  delay(500);
 }
-
-
-//void caminhoFrente()
-//{
-//  //O carro se movimenta para frente.
-//    analogWrite(motorB1, 0);
-//    analogWrite(motorA1, vSpeed);
-//    analogWrite(motorA2, 0);
-//    analogWrite(motorB2, vSpeed);
-//}
-
-//void caminhoRe()
-//{
-//   // o carro se movimenta para trás.
-//    analogWrite(motorA1, 0);
-//    analogWrite(motorB1, vSpeed);
-//    analogWrite(motorB2, 0);
-//    analogWrite(motorA2, vSpeed);
-//}
-
-//void caminhoFrenteEsquerda()
-//{
-//  // o carro se movimenta para Frente Esquerda.
-//    analogWrite(motorA1, vSpeed); 
-//    analogWrite(motorA2, 0);
-//    analogWrite(motorB1, 100);    
-//    analogWrite(motorB2, 0);
-//}
-//
-//void caminhoFrenteDireita()
-//{
-//    // o carro se movimenta para Frente Direita.
-//    analogWrite(motorA1, 100); 
-//    analogWrite(motorA2, 0);
-//    analogWrite(motorB1, vSpeed);      
-//    analogWrite(motorB2, 0);
-//}
-//
-//
-//void caminhoReEsquerda()
-//{
-//    // o carro se movimenta para Trás Esquerda.
-//    analogWrite(motorA1, 0);   
-//    analogWrite(motorA2, vSpeed);
-//    analogWrite(motorB1, 0); 
-//    analogWrite(motorB2, 100);
-//}
-//
-//void caminhoReDireita()
-//{
-//  // o carro se movimenta para Trás Direita.
-//    analogWrite(motorA1, 0);   
-//    analogWrite(motorA2, 0);
-//    analogWrite(motorB1, 0);   
-//    analogWrite(motorB2, vSpeed);
-//}
-// 
-//void esquerda()
-//{
-//  //o carro se movimenta para esquerda.
-//    analogWrite(motorA1, 0);
-//    analogWrite(motorA2, vSpeed);
-//    analogWrite(motorB1, vSpeed);
-//    analogWrite(motorB2, 0);
-//}
-
-//void direita()
-//{
-//  //o carro se movimenta para direita.
-//    analogWrite(motorA1, vSpeed);
-//    analogWrite(motorA2, 0);
-//    analogWrite(motorB1, 0);
-//    analogWrite(motorB2, vSpeed);
-//}
 
 void parado()
 {
@@ -161,7 +87,7 @@ void desligaBuzina()
 
 void controleUltrassonico()
 {
-    long duration, distance;
+    long duration, distance, distanceEsq, distanceDir;
     digitalWrite(trigPin, LOW); 
     delay(2);
     digitalWrite(trigPin, HIGH);
@@ -169,69 +95,58 @@ void controleUltrassonico()
     digitalWrite(trigPin, LOW);
     duration = pulseIn(echoPin, HIGH);
     distance = (duration/2) / 29.1;
+   
     Serial.println(distance);
-     if(distance > 20 ){
-     // caminhoFrente();
+     if(distance > 20 )
+     {
      frente();  
      }
-   else{
-    direita(); 
-     //  tras();
-   //  caminhoRe();  
-    // caminhoReDireita();
-   }
-   
-//    if (distance <= 30) {
-//    caminhoRe();
-//    }
-//    else {
-//      
-//    }
-//    if (distance < 25) {
-//      caminhoFrenteDireita();
-//    }
-//    else {
-//    caminhoFrenteEsquerda();
-//  }
-//  if (distance < 20) {
-//      caminhoReDireita();
-//} 
- // else {
-    //digitalWrite(led3, LOW);
- // }
- // if (distance < 15) {
-   // digitalWrite(led4, HIGH);
-//    sound = 950;
-//}
- // else {
-   // digitalWrite(led4,LOW);
- // }
-  //if (distance < 10) {
-   // digitalWrite(led5, HIGH);
-  //  sound = 1000;
-//}
- // else {
-   // digitalWrite(led5,LOW);
- // }
- // if (distance < 5) {
-   // digitalWrite(led6, HIGH);
- //   sound = 1050;
- // }
- // else {
-    //digitalWrite(led6,LOW);
- // }
- 
-//  if (distance > 30 || distance <= 0){
-//    Serial.println("Out of range");
-//    desligaBuzina();
-//  }
-//  else {
-//    Serial.print(distance);
-//    Serial.println(" cm");
-//    ligaBuzina();
-//   
-//  }
-//  delay(500);
+     else{
+    parado();
+    delay(125);
+    direita();
+    delay(125);
+    duration = pulseIn(echoPin, HIGH);
+    //distanceEsq = (duration/2) / 29.1;
+    distanceDir = (duration/2) / 29.1;
+    parado();
+    esquerda();
+    parado();
+    delay(125);
+    esquerda();
+    delay(125);
+    duration = pulseIn(echoPin, HIGH);
+    distanceEsq = (duration/2) / 29.1;
+    parado();
+    direita();
+    parado();  
+    delay(125);
+        if(distanceDir > distanceEsq)
+        {
+        direita();
+        delay(125);
+        frente();  
+      }
+      else{
+      esquerda();
+      delay(125);
+      frente();
+      }
+ }
+     //     else{
+//      direita(); 
+//        if(distance <20 && distance != 0)
+//        {
+//        esquerda();
+//        }
+//        else{
+//          frente();
+//        }
+//     }
+//     if(distance == 0)
+//     {
+//     tras();
+//     }
 }
 void loop()
 {
