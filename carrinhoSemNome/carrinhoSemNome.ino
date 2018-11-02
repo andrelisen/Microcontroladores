@@ -38,7 +38,8 @@
     digitalWrite(motorA2, LOW); //motor a
     digitalWrite(motorB1, velocidade); //motor b
     digitalWrite(motorB2, LOW); //motor b
-    delay(2000);
+    delay(1000);
+    parado();
   }
   
   void esquerda()
@@ -47,7 +48,9 @@
     digitalWrite(motorA2, LOW);
     digitalWrite(motorB1, LOW);//DIREITA
     digitalWrite(motorB2,LOW);
-    delay(500);
+    //delay(500);
+    //delay(1000);
+    delay(800);
     parado();
   }
   
@@ -57,7 +60,7 @@
     digitalWrite(motorA2, LOW);
     digitalWrite(motorB1, velocidade);
     digitalWrite(motorB2,LOW);
-    delay(1000);
+    delay(800); //anda bem
     parado();
   }
   
@@ -68,7 +71,7 @@
       digitalWrite(motorA2, LOW);
       digitalWrite(motorB1, LOW);
       digitalWrite(motorB2, LOW);
-  }
+}
   
   void ligaBuzina()
   {
@@ -79,104 +82,32 @@
   {
       noTone(buzina);   
   }
-  
-  void controleUltrassonico()
-  {
-    //Le as informacoes do sensor, em cm
     float distancia;//em cm
-    long contador = ultrasonic.timing(); //contador em seg
+    long contador ;//contador em seg
+   void loop()
+  {
+    contador =  ultrasonic.timing(); //contador em seg
+    //Le as informacoes do sensor, em cm
     distancia = ultrasonic.convert(contador, Ultrasonic::CM);
-    //inMsec = ultrasonic.convert(microsec, Ultrasonic::IN);
-    //Exibe informacoes no serial monitor
-    Serial.print("Distancia em cm: ");
-    Serial.print(distancia);
-   // Serial.print(" - Distancia em polegadas: ");
-  //  Serial.println(inMsec);
-    //delay(1000);
-      
-  //    long duration, distance, distanceEsq, distanceDir;
-  //   // digitalWrite(trigPin, LOW); 
-  //   // delay(2);
-  //    digitalWrite(trigPin, HIGH); //echo recebe trig manda
-  //    delay(100);
-  //    //digitalWrite(trigPin, LOW);
-  //    duration = pulseIn(echoPin, HIGH);
-  //    distance = (duration/2) / 29.1;
-  //   
-  //    Serial.println(distance);
         if(distancia > 15 ){
-         frente();  
-        }
-        
-        if(distancia <= 5){
-          tras();
-        }
-  
-        if(distancia < 15){
-          direita();  
+        frente();  
+        }else{
+          parado();
+          direita();
+          parado();
           contador = ultrasonic.timing(); //contador em seg
           distancia = ultrasonic.convert(contador, Ultrasonic::CM);
             if(distancia > 15){
               frente();
-            }else{
-              esquerda();
-              esquerda();
-              contador = ultrasonic.timing(); //contador em seg
-              distancia = ultrasonic.convert(contador, Ultrasonic::CM);
+            }
+            else{
+             esquerda();
+             esquerda();
               if(distancia > 15){
                 frente();
-              }else{
-               direita();   
+                }else{
+                esquerda();
               }
-            }
+          }
         }
-  //       else
-  //     {
-  //       ligaBuzina();
-  //       delay(15);
-  //       desligaBuzina();
-  //        parado();
-  //          direita();
-  //        delay(90);
-  //        parado();
-  //        duration = pulseIn(echoPin, HIGH);
-  //        distanceDir = (duration/2) / 29.1;
-  //        delay(10);
-  //        esquerda();
-  //        delay(10);
-  //        parado();
-  //        esquerda();
-  //        delay(90);
-  //        parado();        
-  //        duration = pulseIn(echoPin, HIGH);
-  //        distanceEsq = (duration/2) / 29.1;
-  //        delay(10);
-  //        direita();
-  //        delay(90);
-  //        parado();  
-  //          if(distanceDir > distanceEsq)
-  //          {
-  //            direita();
-  //            delay(90);
-  //            frente();  
-  //          }
-  //          else
-  //          {
-  //          esquerda();
-  //          delay(90);
-  //          frente();
-  //          }
-  //     }
-  //     if(distance == 0 || distanceDir == 0 || distanceEsq == 0)
-  //     {
-  //     tras();
-  //     delay(30);
-  //     direita();
-  //     delay(180);
-  //     frente();  
-  //     }
-  }
-  void loop()
-  {
-     controleUltrassonico(); 
   }
