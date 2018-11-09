@@ -1,5 +1,5 @@
-                                // A B C D E F G   
-byte seven_seg_digits[11][7] = {  {0,1,1,0,1,1,1},//H
+                                   // A B C D E F G   
+byte matrizModo[11][7] = {        {0,1,1,0,1,1,1},//H
                                   {1,0,0,1,1,1,1},//E
                                   {0,0,0,1,1,1,0},//L
                                   {0,0,0,1,1,1,0},//L
@@ -12,13 +12,36 @@ byte seven_seg_digits[11][7] = {  {0,1,1,0,1,1,1},//H
                                   {1,1,0,0,1,1,1},//P
                                  };
 byte count = 0;
-int botao = 2;
-int estadoBotao;
+/*
+Faça com que as transições das letras sejam feitas com interrupções,
+das seguintes formas:
+• Nos pinos INT0 e INT1;
+• Com Pin Change;
+• Usando Timer.*/
+//LOW = 1 HIGH = 0
 
+void InitialiseInterrupt(){
+  cli();		        // Desabilita interrupcoes  
+  PCICR = 0x02;
+  PCMSK1 = 0b00000111;
+  sei();		        // Habilita interrupcoes
+}
+
+ISR(PCINT1_vect) {    
+  if(count == 0 || count == 11) //primeira vez
+  {
+    count = 0;
+    escreveDisplay(count);
+    count = count + 1;  
+  }
+  else{
+    escreveDisplay(count);
+    count = count + 1;  
+  }
+}
 
 void setup() 
 {
-  pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
@@ -26,26 +49,26 @@ void setup()
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
-  pinMode(13, OUTPUT);
+  pinMode(11, OUTPUT);
+  pinMode(13, OUTPUT); //led da placa
   writePonto(0);  //inicializa ponto decimal como desligado
-  pinMode(2, INPUT);//Esta inicializando o botao que esta na posicao 20
- attachInterrupt(0, reset, CHANGE);//digitalPinToInterrupt(20)
- Serial.begin(9600);
+  pinMode(A0, INPUT_PULLUP);
+  InitialiseInterrupt();
 }
   
 void writePonto(byte modo)   //Funcao que aciona o ponto no display
 {  
-  digitalWrite(10, modo);
+  digitalWrite(11, modo);
 }
 
-void sevenSegWrite(byte digit)  //Funcao que aciona o display
+void escreveDisplay(byte numero)  //Funcao que aciona o display
 {
-  byte pin = 3;
+  byte pin = 4;
 
   //Percorre o array ligando os segmentos correspondentes ao digito
-  for (byte segCount = 0; segCount < 7; ++segCount)  
+  for (byte letra = 0; letra < 7; ++letra)  
   { 
-    digitalWrite(pin, seven_seg_digits[digit][segCount]);
+    digitalWrite(pin, matrizModo[numero][letra]);
     ++pin;
   }
     writePonto(1);  //Liga o ponto
@@ -55,22 +78,7 @@ void sevenSegWrite(byte digit)  //Funcao que aciona o display
 
 void loop() 
 {
-   if(count ==11)
-   {
-     count = 0;
-   }
-   else{
-     sevenSegWrite(count);
-     count++;
-    delay(1000); 
-   }
-}     
+ 
+}
 
-void reset()
-  {
-    count = 0;
-    delay(1000);
-    digitalWrite(13,LOW);
-    delay(1000);
-    digitalWrite(13,HIGH);
-  }
+
