@@ -8,7 +8,7 @@ int motorB2 = 7;
 int buzina = 8;
 int enviaPino = 10;  //envia - trig
 int recebePino = 11; //recebe - 00ho
-int velocidade = 255; //0 < X < 255
+int velocidade = 5; //0 < X < 255
 
 //Inicializa o sensor nos pinos definidos acima
 Ultrasonic ultrasonic(enviaPino, recebePino);
@@ -26,9 +26,11 @@ void setup() {
 
 void frente() {
   digitalWrite(motorA1, LOW); //motor a
-  digitalWrite(motorA2, velocidade); //motor a
-  digitalWrite(motorB1, LOW); //motor b
-  digitalWrite(motorB2, velocidade);//motor b
+  digitalWrite(motorA2, 150); //motor a
+//  analogWrite(motorA2, 150);
+  digitalWrite(motorB1,LOW); //motor b
+ // analogWrite(motorB2, 150);
+ digitalWrite(motorB2, 150);//motor b
 }
 
 void tras() {
@@ -103,16 +105,20 @@ void loop() {
   //Le as informacoes do sensor, em cm
   distancia = ultrasonic.convert(contador, Ultrasonic::CM);
   frente();
-  if (distancia < 15 ) {
-    direita();  //vai girar para a direita e analisar
+ // if (distancia < 15 ) {
+  if(distancia < 10){ 
+   direita();  //vai girar para a direita e analisar
     contador = ultrasonic.timing(); //contador em seg
     distD = ultrasonic.convert(contador, Ultrasonic::CM);
-    if (distD < 15) {
+    //if (distD < 15) {
+      if(distD<10){
       direita_volta();
       esquerda(); //vai girar para a esquerda e analisar
       contador = ultrasonic.timing(); //contador em seg
       distE = ultrasonic.convert(contador, Ultrasonic::CM);
-      if (distE > 15) {
+    //  if (distE > 15)
+     if (distE >= 10)
+      {
         frente();
       } else {
         esquerda_volta();
