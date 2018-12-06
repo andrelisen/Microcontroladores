@@ -73,22 +73,12 @@
         frente();  
         }
         else{
-        if(verificacao == 0){
           parado();
           delay(1000);
           direita();
           delay(580); //dobra 90 graus
         }
-        else{//viu que mesmo dobrando p/ esquerda não teria como andar novamente já que voltou para o locar aonde estava
-              parado();
-              delay(1000);
-              esquerda();
-              delay(610);
-               frente();
-               verificacao = 0;
-        }
-        }
-        contador = ultrasonic.timing(); //contador em seg
+          contador = ultrasonic.timing(); //contador em seg
           distancia = ultrasonic.convert(contador, Ultrasonic::CM);
             if(distancia > 20){
               frente();  
@@ -99,6 +89,5 @@
                esquerda();
                delay(610);
                frente();
-               verificacao ++;
               }
    }
