@@ -1,4 +1,4 @@
-4#include <Ultrasonic.h>
+#include <Ultrasonic.h>
 
   //Define os pinos de utilizaçao de controle para o motor 
   int motorA1 = 4; //esquerda
@@ -8,8 +8,9 @@
   int buzina = 8;
   int enviaPino = 10;  //envia - trig
   int recebePino = 11; //recebe - echo
-  int velocidade = 150; //0 < X < 255
-  
+
+
+
      //Inicializa o sensor nos pinos definidos acima
   Ultrasonic ultrasonic(enviaPino, recebePino);
   
@@ -27,41 +28,29 @@
   void frente()
   {
     digitalWrite(motorA1, LOW); //motor a
-    digitalWrite(motorA2, velocidade); //motor a
+//    digitalWrite(motorA2, velocidade); //motor a
+    digitalWrite(motorA2, HIGH);
     digitalWrite(motorB1,LOW); //motor b
-    digitalWrite(motorB2, velocidade);//motor b
-  }
-  
-  void tras()
-  {
-    digitalWrite(motorA1, velocidade); //motor a
-    digitalWrite(motorA2, LOW); //motor a
-    digitalWrite(motorB1, velocidade); //motor b
-    digitalWrite(motorB2, LOW); //motor b
-    delay(1000);
-    parado();
+  //  digitalWrite(motorB2, velocidade);//motor b
+  digitalWrite(motorB2, HIGH);
   }
   
   void esquerda()
   {
-    digitalWrite(motorA1, velocidade); //ESQUERDA
+    digitalWrite(motorA1, HIGH); //ESQUERDA
     digitalWrite(motorA2, LOW);
     digitalWrite(motorB1, LOW);//DIREITA
     digitalWrite(motorB2,LOW);
-    //delay(500);
-    //delay(1000);
-    delay(800);
-    parado();
   }
   
   void direita()
   {
     digitalWrite(motorA1, LOW);
     digitalWrite(motorA2, LOW);
-    digitalWrite(motorB1, velocidade);
+    digitalWrite(motorB1, HIGH);
     digitalWrite(motorB2,LOW);
-    delay(800); //anda bem
-    parado();
+   // delay(800); //anda bem
+  //  parado();
   }
   
   void parado()
@@ -71,17 +60,8 @@
       digitalWrite(motorA2, LOW);
       digitalWrite(motorB1, LOW);
       digitalWrite(motorB2, LOW);
-}
-  
-  void ligaBuzina()
-  {
-    //aciona a buzina.
-      tone(buzina,1500);   
   }
-  void desligaBuzina()
-  {
-      noTone(buzina);   
-  }
+    int verificacao = 0;
     float distancia;//em cm
     long contador ;//contador em seg
    void loop()
@@ -89,25 +69,25 @@
     contador =  ultrasonic.timing(); //contador em seg
     //Le as informacoes do sensor, em cm
     distancia = ultrasonic.convert(contador, Ultrasonic::CM);
-        if(distancia > 15 ){
+        if(distancia > 20 ){
         frente();  
-        }else{
+        }
+        else{
           parado();
+          delay(1000);
           direita();
-          parado();
+          delay(580); //dobra 90 graus
+        }
           contador = ultrasonic.timing(); //contador em seg
           distancia = ultrasonic.convert(contador, Ultrasonic::CM);
-            if(distancia > 15){
-              frente();
-            }
-            else{
-             esquerda();
-             esquerda();
-              if(distancia > 15){
-                frente();
-                }else{
-                esquerda();
+            if(distancia > 20){
+              frente();  
               }
-          }
-        }
-  }
+              else{
+               parado();
+               delay(1000);
+               esquerda();
+               delay(610);
+               frente();
+              }
+   }
