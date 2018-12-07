@@ -33,6 +33,16 @@
     digitalWrite(motorB1,LOW); //motor b
   //  digitalWrite(motorB2, velocidade);//motor b
   digitalWrite(motorB2, HIGH);
+  delay(500);
+  arrumar();
+  }
+
+  void arrumar(){
+  digitalWrite(motorB1, LOW);
+  digitalWrite(motorB2, LOW);
+  delay(75);
+  digitalWrite(motorB1, HIGH);
+  digitalWrite(motorB2, HIGH);
   }
   
   void esquerda()
@@ -61,33 +71,46 @@
       digitalWrite(motorB1, LOW);
       digitalWrite(motorB2, LOW);
   }
-    int verificacao = 0;
-    float distancia;//em cm
-    long contador ;//contador em seg
-   void loop()
-  {
-    contador =  ultrasonic.timing(); //contador em seg
-    //Le as informacoes do sensor, em cm
-    distancia = ultrasonic.convert(contador, Ultrasonic::CM);
-        if(distancia > 20 ){
-        frente();  
-        }
-        else{
+  
+  int verificacao = 0;
+    float distancia;//EM CM
+    long contador = 0;//CONTADOR EM SEG
+void loop()
+        {
+        contador =  ultrasonic.timing(); //CONTADOR EM SEG
+       //LÊ AS INFORMAÇÕES DO SENSOR, EM CM
+      distancia = ultrasonic.convert(contador, Ultrasonic::CM);  
+ if(distancia > 30 )
+           {
+               frente();  
+               
+           }
+else{
+        if(verificacao == 0){
           parado();
           delay(1000);
           direita();
-          delay(580); //dobra 90 graus
-        }
-          contador = ultrasonic.timing(); //contador em seg
-          distancia = ultrasonic.convert(contador, Ultrasonic::CM);
-            if(distancia > 20){
-              frente();  
-              }
-              else{
-               parado();
-               delay(1000);
-               esquerda();
-               delay(610);
+          delay(580); //DOBRA 90 GRAUS
+        }else{ //VIU QUE MESMO DOBRANDO P/ ESQUERDA NÃO TERIA COMO ANDAR NOVAMENTE JÁ QUE VOLTAVA PARA O LOCAL AONDE ESTAVA
+              parado();
+              delay(1000);
+              esquerda();
+              delay(610);
                frente();
-              }
-   }
+               verificacao = 0;
+        }
+       }
+  contador = ultrasonic.timing(); 
+  distancia = ultrasonic.convert(contador, Ultrasonic::CM);
+            if(distancia > 30){
+      frente();        
+            }
+  else{
+    parado();
+    delay(1000);
+    esquerda();
+    delay(610);
+    frente();
+    verificacao ++;
+       }
+}
